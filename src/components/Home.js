@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import '../app.css'
 export default function Home() {
     const [data, setData]=useState('World')
     const handleClick=()=>{
@@ -10,7 +11,7 @@ export default function Home() {
         }
     }
     return (
-        <div>
+        <div className='mainContent'>
             Hello {data}
             <button onClick={handleClick}>Click Me!</button>
         </div>
