@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { Creators } from '../state';
 import '../app.css'
 export default function Home() {
-    const [data, setData]=useState('World')
+    const dispatch=useDispatch()
+    const data = useSelector(state => state.valueReducer)
     const handleClick=()=>{
-        if(data==='World'){
-            setData('Taj')
+        if(data=='World'){
+            dispatch(Creators.changeVal())
         }
         else{
-            setData('World')
+            dispatch(Creators.resetVal())
         }
     }
     return (
