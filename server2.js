@@ -1,15 +1,33 @@
 import express from 'express';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import App from './src/components/App';
+import App from './src/components/app';
 import { Provider } from 'react-redux';
-import path from 'path';
 import { renderToString } from 'react-dom/server';
-
+import { StaticRouter } from 'react-router-dom/server'; // Change BrowserRouter to StaticRouter
+import { applyMiddleware, legacy_createStore as createStore } from "redux";
+import reducers from "./src/state/reducers/index";
+import thunk from 'redux-thunk'
 const app = express();
-
-// Serve the static assets from the 'dist' directory
 app.use(express.static('dist'));
+
+const store = createStore(reducers, applyMiddleware(thunk))
+
+app.get('*', (req, res) => { // Use '' to handle all routes
+  console.log(req.url)
+  const html = renderToString(
+    <Provider store={store}>
+      <StaticRouter location={req.url}> {/* Pass the location and context */}
+        <App />
+      </StaticRouter>
+    </Provider>
+  )
+  console.log('here')
+    const preloadedState = store.getState();
+    console.log('here')
+    res.send(renderFullPage(html, preloadedState));
+});
+
 function renderFullPage(html, preloadedState) {
   return `
     <!doctype html>
@@ -20,9 +38,7 @@ function renderFullPage(html, preloadedState) {
       <body>
         <div id="root">${html}</div>
         <script>
-          // WARNING: See the following for security issues around embedding JSON in HTML:
-          // https://redux.js.org/usage/server-rendering#security-considerations
-          window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(
+          window._PRELOADED_STATE_ = ${JSON.stringify(preloadedState).replace(
             /</g,
             '\\u003c'
           )}
@@ -30,23 +46,8 @@ function renderFullPage(html, preloadedState) {
         <script src="/client_bundle.js"></script>
       </body>
     </html>
-    `
+  `;
 }
-import { applyMiddleware, legacy_createStore as createStore } from "redux";
-import reducers from "./src/state/reducers/index";
-import thunk from 'redux-thunk'
-const store = createStore(reducers, applyMiddleware(thunk))
-
-app.get('/', (req, res) => {
-  const html = renderToString(
-    <Provider store={store}>
-      <App />
-    </Provider>
-  )
-  const preloadedState = store.getState()
-  res.send(renderFullPage(html, preloadedState))
-});
-
 app.listen(3000, () => {
   console.log('Server is running on http://localhost:3000');
 });
