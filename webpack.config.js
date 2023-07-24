@@ -29,10 +29,12 @@ const serverConfig={
   }
   const clientConfig={
     target: 'web',
+    mode:'development',
     entry: './client.js',
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: 'client_bundle.js',
+      chunkFilename:'[name].client_bundle.js',
     },
     devtool:'source-map',
     module: {
@@ -53,5 +55,13 @@ const serverConfig={
         }
       ],
     },
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          default: false,
+          vendors: false,
+        },
+      },
+    }
   }
 module.exports = [serverConfig, clientConfig];

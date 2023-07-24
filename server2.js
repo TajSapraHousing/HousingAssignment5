@@ -1,5 +1,6 @@
 import express from 'express';
-import React from 'react';
+import React, {Suspense} from 'react';
+import {Switch} from 'react-router-dom'
 import ReactDOMServer from 'react-dom/server';
 import App from './src/components/app';
 import { Provider } from 'react-redux';
@@ -10,7 +11,7 @@ import reducers from "./src/state/reducers/index";
 import thunk from 'redux-thunk'
 const app = express();
 app.use(express.static('dist'));
-
+// http://localhost:3000/dist/src_components_Home_js.client_bundle.js
 const store = createStore(reducers, applyMiddleware(thunk))
 
 app.get('*', (req, res) => { // Use '' to handle all routes
@@ -18,7 +19,9 @@ app.get('*', (req, res) => { // Use '' to handle all routes
   const html = renderToString(
     <Provider store={store}>
       <StaticRouter location={req.url}> {/* Pass the location and context */}
-        <App />
+        <Suspense fallback={<div>Loading</div>}>
+            <App />
+        </Suspense>
       </StaticRouter>
     </Provider>
   )
