@@ -3,7 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Creators } from '../state';
 import { useNavigate } from 'react-router-dom';
 import '../app.css'
+import styles from '../styles.modules.css'
+import styles2 from '../styles2.modules.css'
 export default function Home() {
+    const buttonclass=`${styles.bttncls} ${styles2.bttncls}`
     const dispatch=useDispatch()
     const navigate=useNavigate()
     const data = useSelector(state => state.valueReducer)
@@ -21,8 +24,8 @@ export default function Home() {
     return (
         <div className='mainContent'>
             Hello {data}
-            <button onClick={handleClick}>Click Me!</button>
-            <button onClick={handleClick2}>Lets go</button>
+            <button onClick={handleClick} className={buttonclass}>Click Me!</button>
+            <button onClick={handleClick2} className={buttonclass}>Lets go</button>
         </div>
     )
 }

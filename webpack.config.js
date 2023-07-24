@@ -7,6 +7,7 @@ const serverConfig={
       path: path.resolve(__dirname, 'dist'),
       filename: 'bundle.js',
     },
+    devtool:'source-map',
     module: {
       rules: [
         {
@@ -33,6 +34,7 @@ const serverConfig={
       path: path.resolve(__dirname, 'dist'),
       filename: 'client_bundle.js',
     },
+    devtool:'source-map',
     module: {
       rules: [
         {
